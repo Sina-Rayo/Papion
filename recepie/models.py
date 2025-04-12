@@ -12,7 +12,7 @@ class Categorie(models.Model):
     # recepies = models.ForeignKey(Recepie , on_delete=models.PROTECT)
 
 class Recepie(models.Model):
-    name = models.CharField(max_length=25)
+    name = models.CharField(max_length=25 , unique=True)
     text = models.TextField()
     account = models.ForeignKey(Account , on_delete=models.PROTECT)
     likers = models.ManyToManyField(Account , related_name='likes' , null=True)
