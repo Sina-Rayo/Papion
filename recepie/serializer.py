@@ -26,7 +26,6 @@ class IngredientSerializer(serializers.ModelSerializer):
     class Meta:
         model = Ingredient
         fields = '__all__'
-        # exclude = ['recepie']
 
 class RecepieCreateSerializer(serializers.Serializer):
     name = serializers.CharField(max_length=25)
@@ -42,3 +41,6 @@ class RecepieCreateSerializer(serializers.Serializer):
     # slug = serializers.SlugField()
     categorie = serializers.IntegerField()
     ingiridients = serializers.ListField(child=serializers.DictField(child=serializers.CharField()))
+
+class CreateCommentSerializer(serializers.Serializer):
+    text = serializers.CharField()

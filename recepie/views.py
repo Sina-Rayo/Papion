@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from .models import Account , Recepie , Categorie , Comment , Ingredient
-from .serializer import AccountSerializer , RecepieSerializer , CategorieSerializer ,IngredientSerializer , CommentSerializer , RecepieCreateSerializer
+from .serializer import AccountSerializer , RecepieSerializer , CategorieSerializer ,IngredientSerializer , CommentSerializer , RecepieCreateSerializer , CreateCommentSerializer
 
 from rest_framework import status
 from rest_framework.request import Request
@@ -10,8 +10,6 @@ from rest_framework.authentication import BasicAuthentication
 from rest_framework.permissions import IsAuthenticated
 
 @api_view(['GET'])
-# @authentication_classes([BasicAuthentication])
-# @permission_classes([IsAuthenticated])
 def main_page(request:Request):
     object_categorie_list = CategorieSerializer(Categorie.objects.all() , many=True)
 
@@ -27,12 +25,27 @@ def categorie_page(request:Request , cat):
     # return render(request , "sth.html" , {recepies : recepie_list})
 
 @api_view(['GET' , 'POST'])
+@authentication_classes([BasicAuthentication])
+@permission_classes([IsAuthenticated])
 def recepie_page(request:Request ,slug):
-    recepie = RecepieSerializer(Recepie.objects.get(slug=slug))
-    ingredients = IngredientSerializer(Ingredient.objects.filter(recepie__slug=slug) , many=True)
-    comments = CommentSerializer(Comment.objects.filter(recepie__slug=slug) , many=True)
-    return Response({'res':recepie.data , 'comments':comments.data , 'ingredients':ingredients.data} , status.HTTP_200_OK)
-    # return render(request , "sth.html" , {res : recepie})
+    if request.method == 'POST': # for Comment
+        serializer = CreateCommentSerializer(data=request.data)
+        if serializer.is_valid():
+            text = serializer.validated_data['text']
+            recepie = Recepie.objects.get(slug=slug)
+            ac = request.user.username
+            account = Account.objects.get(username=ac)
+            comment = Comment(text=text , account=account , recepie=recepie)
+            comment.save()
+            return Response({'Comment Created'}, status=200)
+        return Response({'Error while sending Comment'}, status=200)
+
+    else:
+        recepie = RecepieSerializer(Recepie.objects.get(slug=slug))
+        ingredients = IngredientSerializer(Ingredient.objects.filter(recepie__slug=slug) , many=True)
+        comments = CommentSerializer(Comment.objects.filter(recepie__slug=slug) , many=True)
+        return Response({'res':recepie.data , 'comments':comments.data , 'ingredients':ingredients.data} , status.HTTP_200_OK)
+        # return render(request , "sth.html" , {res : recepie})
 
 def account(request):
     pass
@@ -41,10 +54,13 @@ def account(request):
 def create_recepie(request:Request):
 
     serializer = RecepieCreateSerializer(data=request.data)
-    print(request.data)
-    print(serializer)
     if serializer.is_valid():
         name = serializer.validated_data['name']
+        try:
+            Recepie.objects.get(name=name)
+            return Response({'Recepie already exists'}, status=200) 
+        except:
+            pass
         text = serializer.validated_data['text']
         ac  = serializer.validated_data['account']
         account = Account.objects.get(pk=int(ac))
@@ -62,7 +78,6 @@ def create_recepie(request:Request):
 
         ing_ser = serializer.validated_data['ingiridients']
         for i in range(0, len(ing_ser)):
-            print("AAAAAAAA")
             ing_name = ing_ser[i]["name"]
             measurement = ing_ser[i]["measurement"]
             number = ing_ser[i]["number"]
