@@ -35,3 +35,11 @@ class LoginView(APIView):
                 return Response({'message': 'Login successful!'}, status=200)
             return Response({'error': 'Invalid credentials'}, status=401)
         return Response(serializer.errors, status=400)
+
+
+#  SingUp
+# {
+# "username" : "sina",
+# "password" : "123",
+# "email" : "s@gmail.com"
+# }

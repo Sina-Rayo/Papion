@@ -51,6 +51,8 @@ def account(request):
     pass
 
 @api_view(['POST'])
+@authentication_classes([BasicAuthentication])
+@permission_classes([IsAuthenticated])
 def create_recepie(request:Request):
 
     serializer = RecepieCreateSerializer(data=request.data)
@@ -62,8 +64,10 @@ def create_recepie(request:Request):
         except:
             pass
         text = serializer.validated_data['text']
-        ac  = serializer.validated_data['account']
-        account = Account.objects.get(pk=int(ac))
+        # ac  = serializer.validated_data['account']
+        # account = Account.objects.get(pk=int(ac))
+        ac = request.user.username
+        account = Account.objects.get(username=ac)
         main_recepie = serializer.validated_data['main_recepie']
         # time = models.TimeField(null=True)
         # likes = models.IntegerField()
