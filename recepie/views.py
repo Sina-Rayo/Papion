@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from .models import Account , Recepie , Categorie , Comment , Ingredient
-from .serializer import AccountSerializer , RecepieSerializer , CategorieSerializer ,IngredientSerializer , CommentSerializer
+from .serializer import AccountSerializer , RecepieSerializer , CategorieSerializer ,IngredientSerializer , CommentSerializer , RecepieCreateSerializer
 
 from rest_framework import status
 from rest_framework.request import Request
@@ -39,12 +39,15 @@ def account(request):
 
 @api_view(['POST'])
 def create_recepie(request:Request):
-    serializer = RecepieSerializer(data=request.data)
+
+    serializer = RecepieCreateSerializer(data=request.data)
+    print(request.data)
+    print(serializer)
     if serializer.is_valid():
         name = serializer.validated_data['name']
         text = serializer.validated_data['text']
         ac  = serializer.validated_data['account']
-        # account = Account.objects.get(pk=ac)
+        account = Account.objects.get(pk=int(ac))
         main_recepie = serializer.validated_data['main_recepie']
         # time = models.TimeField(null=True)
         # likes = models.IntegerField()
@@ -53,32 +56,31 @@ def create_recepie(request:Request):
         # img = serializer.validated_data['img']
         slug = name.replace(" ", "")
         cat  = serializer.validated_data['categorie']
-        # categorie = Categorie.objects.get(pk=cat)
-        print(ac.username)
-        res = Recepie(name=name , text=text , account=ac , main_recepie=main_recepie , slug=slug , categorie=cat , likes=0)
+        categorie = Categorie.objects.get(pk=int(cat))
+        res = Recepie(name=name , text=text , account=account , main_recepie=main_recepie , slug=slug , categorie=categorie , likes=0)
         res.save()
-        ing_list  = serializer.validated_data['ing_list'] # [[n , m , num] , [n , m , num]]
-        for i in range(0,len(ing_list)):
-            ing_name = ing_list[i][0]
-            measurement = ing_list[i][1]
-            number = ing_list[i][2]
+
+        ing_ser = serializer.validated_data['ingiridients']
+        for i in range(0, len(ing_ser)):
+            print("AAAAAAAA")
+            ing_name = ing_ser[i]["name"]
+            measurement = ing_ser[i]["measurement"]
+            number = ing_ser[i]["number"]
             ing1 = Ingredient(name=ing_name , measurement=measurement , number=number , recepie=res)
-            ing1.save()
+            ing1.save()  
 
-    return Response({'Recepie has been made Successfully'}, status=200)
-
-
-def what_to_cook(request):
-    pass
-
-def search(request):
-    pass
+        return Response({'Recepie has been made Successfully'}, status=200)
+    return Response({'Not valid'}, status=200)
 
 
-# { "name" : "res1" ,
+# {
+# "name" : "res1" ,
 # "text" : " new text " ,
 # "account" : 1 ,
 # "main_recepie" : " main recepie " ,
-# "categorie" : 1,
-# "ing_list" : [["salt" , "pinch" , 2] , ["rice" , "cup" , 1]] 
+# "categorie" : 1
+
+# ,
+# "ingiridients": [{"name" : "salt" , "measurement":"pinch" , "number":"1"} , {"name" : "rice" , "measurement":"cup" , "number":"2"}]
+
 # }
