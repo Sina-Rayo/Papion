@@ -24,7 +24,7 @@ def categorie_page(request:Request , cat):
     return Response({'recepies':recepie_list.data} , status.HTTP_200_OK)
     # return render(request , "sth.html" , {recepies : recepie_list})
 
-@api_view(['GET' , 'POST'])
+@api_view(['GET' , 'POST' , 'PUT'])
 @authentication_classes([BasicAuthentication])
 @permission_classes([IsAuthenticated])
 def recepie_page(request:Request ,slug):
@@ -39,6 +39,27 @@ def recepie_page(request:Request ,slug):
             comment.save()
             return Response({'Comment Created'}, status=200)
         return Response({'Error while sending Comment'}, status=200)
+    elif request.method == 'PUT': #for likes
+        recepie = Recepie.objects.get(slug=slug)
+        ac = request.user.username
+        account = Account.objects.get(username=ac)
+        liker_list = recepie.likers.all()
+        res_account = Account.objects.get(username=recepie.account.username)
+        if account in liker_list:
+            recepie.likes -= 1
+            recepie.likers.remove(account)  
+            res_account.been_liked -= 1 
+            recepie.save() 
+            res_account.save() 
+            return Response({'Unliked'}, status=200)        
+        else:
+            recepie.likes += 1
+            recepie.likers.add(account)
+            res_account.been_liked += 1
+            res_account.save()
+            recepie.save()
+
+        return Response({'liked'}, status=200)
 
     else:
         recepie = RecepieSerializer(Recepie.objects.get(slug=slug))

@@ -15,7 +15,7 @@ class Recepie(models.Model):
     name = models.CharField(max_length=25 , unique=True)
     text = models.TextField()
     account = models.ForeignKey(Account , on_delete=models.PROTECT)
-    likers = models.ManyToManyField(Account , related_name='likes' , null=True)
+    likers = models.ManyToManyField(Account , related_name='likes')
     # ingredients = models.ForeignKey(Ingredient , on_delete=models.CASCADE) 
     main_recepie = models.TextField()
     time = models.TimeField(null=True)
