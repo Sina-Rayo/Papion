@@ -29,7 +29,7 @@ Body for SignUp
 {
 "username" : "user",
 "password" : "pass",
-"email : "mail.gmail.com"
+"email : "mail@gmail.com"
 }
 ```
 Body for LogIn
