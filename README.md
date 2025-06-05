@@ -15,6 +15,7 @@ Tech Stack
 
 API Endpoints
 | Method | Endpoint | Description | Authorization |
+| --- | --- | --- | --- |
 | POST | /users/signup | Sign up | no need | 
 | POST | /users/login | Log in | no need | 
 | GET | / | Retrieve all recipes | no need |
