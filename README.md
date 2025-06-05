@@ -1,19 +1,19 @@
 # Food Recipe API
 > A Django REST Framework-powered API that allows users to sign up, upload recipes, like recipes, and comment on them.
 
-Features
+## Features
 - Basic Authentication for user access
 - Endpoints for creating, retrieving & deleting recipes
 - Making Categories for recipes
 - Like functionality for recipes
 - Commenting system for recipe discussions
 
-Tech Stack
+## Tech Stack
 - Backend: Django REST Framework
 - Authentication: Basic Authentication
 - Database: SQLite
 
-API Endpoints
+## API Endpoints
 | Method | Endpoint | Description | Authorization |
 | --- | --- | --- | --- |
 | POST | /users/signup | Sign up | no need | 
@@ -84,13 +84,6 @@ python manage.py migrate
 python manage.py runserver
 ```
 - API base URL: http://127.0.0.1:8000/
-Usage
-Consume the API using tools like Postman or cURL, passing Basic Authentication credentials for protected endpoints.
-Contributing
-Pull requests are welcome! Follow these steps:
-- Fork the repository
-- Create a new branch (git checkout -b feature-branch)
-- Make your changes & commit (git commit -m "Added a new feature")
-- Push to the branch (git push origin feature-branch)
-- Submit a pull request
 
+## Usage
+Consume the API using tools like Postman or cURL, passing Basic Authentication credentials for protected endpoints.
