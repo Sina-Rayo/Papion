@@ -1,12 +1,12 @@
-Food Recipe API
-A Django REST Framework-powered API that allows users to sign up, upload recipes, like recipes, and comment on them.
+# Food Recipe API
+> A Django REST Framework-powered API that allows users to sign up, upload recipes, like recipes, and comment on them.
 
 Features
-✅ Basic Authentication for user access
-✅ Endpoints for creating, retrieving & deleting recipes
-✅ Making Categories for recipes
-✅ Like functionality for recipes
-✅ Commenting system for recipe discussions
+- Basic Authentication for user access
+- Endpoints for creating, retrieving & deleting recipes
+- Making Categories for recipes
+- Like functionality for recipes
+- Commenting system for recipe discussions
 
 Tech Stack
 - Backend: Django REST Framework
